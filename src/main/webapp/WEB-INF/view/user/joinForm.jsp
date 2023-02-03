@@ -5,9 +5,10 @@
         <div class="container my-3">
             <div class="container">
                 <form action="/join" method="post" onsubmit="return valid()">
-                    <div class="form-group mb-2">
+                    <div class="d-flex form-group mb-2">
                         <input type="text" name="username" class="form-control" placeholder="Enter username"
                             id="username">
+                        <button class="btn btn-secondary ms-2" type="button">중복확인</button>
                     </div>
 
                     <div class="form-group mb-2">
