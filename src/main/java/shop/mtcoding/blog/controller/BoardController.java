@@ -38,7 +38,6 @@ public class BoardController {
         if (BoardSaveReqDto.getContent() == null || BoardSaveReqDto.getContent().isEmpty()) {
             throw new CustomException("content를 작성해주세요");
         }
-
         boardService.write(BoardSaveReqDto, principal.getId());
 
         return "redirect:/";

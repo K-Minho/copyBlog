@@ -25,18 +25,6 @@ public class UserControllerTest {
     @Autowired
     private MockMvc mvc;
 
-    @BeforeEach // Test들의 실행 직전 자동 호출
-    public void setUp() {
-        User user = new User();
-        user.setUsername("ssar");
-        user.setPassword("1234");
-        user.setEmail("ssar@nate.com");
-        user.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
-
-        session = new MockHttpSession();
-        session.setAttribute("principal", user);
-    }
-
     @Test
     public void join_test() throws Exception {
         // given
