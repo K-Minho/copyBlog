@@ -1,18 +1,15 @@
 package shop.mtcoding.blog.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpSession;
-
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -27,7 +24,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import shop.mtcoding.blog.dto.board.BoardResp;
 import shop.mtcoding.blog.dto.board.BoardResp.BoardDetailRespDto;
-import shop.mtcoding.blog.model.User;
 
 // 통합테스트
 // mock(모조) 환경의 ioc컨테이너에 bean이 생성
@@ -43,6 +39,24 @@ public class BoardControllerTest {
 
     @Autowired
     ObjectMapper om;
+
+    @Test
+    public void delete_test() throws Exception {
+        // given
+        int id = 1;
+        // when
+        ResultActions resultActions = mvc.perform(delete("/board/" + id + "/delete").session(session));
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 : " + responseBody);
+        // then
+        /*
+         * json path
+         * 최상위 : $ . ~~ . ~~
+         * 배열 [0]
+         */
+        resultActions.andExpect(jsonPath("$.code").value(-1));
+        resultActions.andExpect(status().is4xxClientError());
+    }
 
     @Test
     public void detail_test() throws Exception {
