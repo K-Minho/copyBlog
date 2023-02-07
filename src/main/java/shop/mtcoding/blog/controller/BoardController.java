@@ -1,7 +1,5 @@
 package shop.mtcoding.blog.controller;
 
-import java.util.List;
-
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import shop.mtcoding.blog.dto.board.BoardReq.BoardSaveReqDto;
-import shop.mtcoding.blog.dto.board.BoardResp.BoardListDto;
 import shop.mtcoding.blog.handler.ex.CustomException;
 import shop.mtcoding.blog.model.BoardRepository;
 import shop.mtcoding.blog.model.User;
@@ -58,7 +55,8 @@ public class BoardController {
     }
 
     @GetMapping("/board/{id}")
-    public String detail(@PathVariable int id) {
+    public String detail(@PathVariable int id, Model model) {
+        model.addAttribute("dto", boardRepository.findBoardById(id));
         return "board/detail";
     }
 

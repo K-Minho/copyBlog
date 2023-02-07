@@ -26,6 +26,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import shop.mtcoding.blog.dto.board.BoardResp;
+import shop.mtcoding.blog.dto.board.BoardResp.BoardDetailRespDto;
 import shop.mtcoding.blog.model.User;
 
 // 통합테스트
@@ -42,6 +43,25 @@ public class BoardControllerTest {
 
     @Autowired
     ObjectMapper om;
+
+    @Test
+    public void detail_test() throws Exception {
+        // given
+        int id = 1;
+        // when
+        ResultActions resultActions = mvc.perform(get("/board/" + id));
+        Map<String, Object> map = resultActions.andReturn().getModelAndView().getModel();
+        BoardDetailRespDto dto = (BoardDetailRespDto) map.get("dto");
+        String model = om.writeValueAsString(dto);
+        System.out.println("테스트 : " + model);
+        System.out.println("테스트 : " + dto.getTitle());
+        System.out.println("테스트 : " + dto.getContent());
+        System.out.println("테스트 : " + dto.getUsername());
+        // then
+        resultActions.andExpect(status().is2xxSuccessful());
+        assertThat(dto.getTitle()).isEqualTo("제목 1번");
+        assertThat(dto.getUsername()).isEqualTo("ssar");
+    }
 
     @Test
     public void main_test() throws Exception {
@@ -62,18 +82,6 @@ public class BoardControllerTest {
         assertThat(dtos.get(5).getUsername()).isEqualTo("love");
     }
 
-    @BeforeEach // Test들의 실행 직전 자동 호출
-    public void setUp() {
-        User user = new User();
-        user.setUsername("ssar");
-        user.setPassword("1234");
-        user.setEmail("ssar@nate.com");
-        user.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
-
-        session = new MockHttpSession();
-        session.setAttribute("principal", user);
-    }
-
     @Test
     public void save_test() throws Exception {
         // given
@@ -81,8 +89,8 @@ public class BoardControllerTest {
         for (int i = 0; i < 49; i++) {
             title += "가";
         }
+        // 아주긴 long 타입은 long.longValue를 통해 비교를 해야함.
         String requestBody = "title=" + title + "&content=2345";
-
         // when
         ResultActions resultActions = mvc.perform(post("/board").content(requestBody)
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE).session(session));
@@ -90,34 +98,4 @@ public class BoardControllerTest {
         resultActions.andExpect(status().is3xxRedirection());
     }
 
-    @Test
-    public void join_test() throws Exception {
-        // given
-        String requestBody = "username=cos&password=1234&email=ssar@nate.com";
-
-        // when
-        ResultActions resultActions = mvc.perform(post("/join").content(requestBody)
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
-        // then
-        resultActions.andExpect(status().is3xxRedirection());
-    }
-
-    @Test
-    public void login_test() throws Exception {
-        // given
-        String requestBody = "username=ssar&password=1234";
-
-        // when
-        ResultActions resultActions = mvc.perform(post("/login").content(requestBody)
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE));
-        HttpSession session = resultActions.andReturn().getRequest().getSession();
-        User principal = (User) session.getAttribute("principal");
-        System.out.println(principal.getUsername());
-
-        // then
-        assertThat(principal.getUsername()).isEqualTo("ssar");
-        resultActions.andExpect(status().is3xxRedirection());
-    }
-
-    // 아주긴 long 타입은 long.longValue를 통해 비교를 해야함.
 }

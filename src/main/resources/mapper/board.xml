@@ -16,6 +16,14 @@
         on bt.userId=ut.id;
     </select>
 
+    <select id="findBoardById" resultType="shop.mtcoding.blog.dto.board.BoardResp$BoardDetailRespDto">
+        select bt.id, bt.title, bt.content, bt.userId, ut.username 
+        from board_tb bt
+        inner join user_tb ut
+        on bt.userId=ut.id
+        where bt.id = #{id};
+    </select>
+
     <select id="findById" resultType="shop.mtcoding.blog.model.Board">
         select * from board_tb where id = #{id}
     </select>   
