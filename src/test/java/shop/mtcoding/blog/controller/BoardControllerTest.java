@@ -1,11 +1,14 @@
 package shop.mtcoding.blog.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -20,6 +23,9 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import shop.mtcoding.blog.dto.board.BoardResp;
 import shop.mtcoding.blog.model.User;
 
 // 통합테스트
@@ -31,7 +37,30 @@ public class BoardControllerTest {
     @Autowired
     private MockMvc mvc;
 
+    @Autowired
     private MockHttpSession session;
+
+    @Autowired
+    ObjectMapper om;
+
+    @Test
+    public void main_test() throws Exception {
+        // given
+        // when
+        ResultActions resultActions = mvc.perform(get("/"));
+        Map<String, Object> map = resultActions.andReturn().getModelAndView().getModel();
+        System.out.println(map);
+        List<BoardResp.BoardListDto> dtos = (List<BoardResp.BoardListDto>) map.get("dtos");
+        String model = om.writeValueAsString(dtos);
+        System.out.println("test : " + model);
+
+        // the
+        resultActions.andExpect(status().is2xxSuccessful());
+        assertThat(dtos.size()).isEqualTo(6);
+        assertThat(dtos.get(1).getTitle()).isEqualTo("제목 2번");
+        assertThat(dtos.get(3).getUsername()).isEqualTo("cos");
+        assertThat(dtos.get(5).getUsername()).isEqualTo("love");
+    }
 
     @BeforeEach // Test들의 실행 직전 자동 호출
     public void setUp() {
