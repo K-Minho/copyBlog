@@ -21,7 +21,7 @@ public class BoardRepositoryTest {
     @Test
     public void findAllMainBoard_test() throws Exception {
         // given
-        ObjectMapper om = new ObjectMapper();
+        ObjectMapper om = new ObjectMapper(); // Mybatis 테스트에선 개별적으로 선언해야함 WebMvc 테스트에선 상주함.
         // when
         List<BoardListDto> boardListDto = boardRepository.findAllMainBoard();
         System.out.println("test size : " + boardListDto.size());
