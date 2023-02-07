@@ -13,7 +13,7 @@ import shop.mtcoding.blog.util.Script;
 public class CustomExceptionHandler {
 
     @ExceptionHandler(CustomException.class)
-    public ResponseEntity<?> customException(CustomException e) {
+    public ResponseEntity<?> CustomException(CustomException e) {
         String responseBody = Script.back(e.getMessage());
         return new ResponseEntity<>(responseBody, e.getStatus());
     }

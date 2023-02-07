@@ -35,6 +35,14 @@
             function valid() {
                 alert("회원가입 유효성 검사");
             }
+
+            $.ajax({
+                valid()
+            }).done(res => {
+                
+            }).fail(err => {
+                console.log(err);
+            });
         </script>
 
         <%@ include file="../layout/footer.jsp" %>
